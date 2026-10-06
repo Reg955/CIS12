@@ -64,3 +64,4 @@ def ip_to_binary(ip:str):
 
 
 print(ip_to_binary('192.168.1.16'))
+
