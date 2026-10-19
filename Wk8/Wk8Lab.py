@@ -23,14 +23,50 @@ def index_to_letter(index, alphabet):
 
 def vigenere_index(key_letter, plaintext_letter, alphabet):
     return index_to_letter(
-        letter_to_index(plaintext_letter, alphabet) +
-        letter_to_index(key_letter, alphabet) % len(alphabet), alphabet)
+        (letter_to_index(plaintext_letter, alphabet) +
+        letter_to_index(key_letter, alphabet)) % len(alphabet), alphabet)
+
+def non_vigenere(key_letter, cipher_text, alphabet):
+    return index_to_letter(
+        (letter_to_index(cipher_text, alphabet) -
+         letter_to_index(key_letter, alphabet)) % len(alphabet), alphabet)
+
+def encrypt_vigenere(key, plaintext, alphabet):
+    cipher_text = ''
+    counter = 0
+    for c in plaintext.lower():
+        if c == ' ':
+            cipher_text += ' '
+        elif c in alphabet:
+            cipher_text += vigenere_index(key[counter % len(key)], c, alphabet)
+            counter += 1
+    return cipher_text
+
+def decrypt_vigenere(key, cipher_text, alphabet):
+    plaintext = []
+    counter = 0
+    for c in cipher_text:
+        if c == ' ':
+            plaintext.append(' ')
+        elif c in alphabet:
+            plaintext.append(non_vigenere(key[counter % len(key)], c, alphabet))
+            counter += 1
+    return ''.join(plaintext)
+
+def enc_menu():
+    
+
+def main():
+    key = 'bluesmurf'
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    message = 'Print this message for fun'
+    ct = encrypt_vigenere(key, message, alphabet)
 
 
 
-key = 'bluesmurf'
-alphabet = 'abcdefghijklmnopqrstuvwxyz'
-print(vigenere_index('b', 'b', alphabet))
 
+#print(vigenere_index('b', 'b', alphabet))
+#print(ct)
+#print(decrypt_vigenere(key, ct, alphabet))
 #vigenere_sq_print(vigenere_sq(alphabet))
 

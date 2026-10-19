@@ -54,7 +54,7 @@ def encrypt_vigenere(key, plaintext, alphabet):
         if c == ' ':
             pass
         elif (c.lower() in alphabet):
-            cipher_text += index_to_letter(key[i % len(key]), alphabet), c, alphabet
+            cipher_text += index_to_letter(key[i % len(key)], alphabet), c, alphabet
         print(f'{c} ')
 
 print(index_to_index(vigenere_index('b','h', alphabet), alphabet))
