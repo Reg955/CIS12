@@ -1,3 +1,5 @@
+from sys import exit
+
 def vigenere_header(alphabet):
     return list(' ') + list(alphabet)
 
@@ -53,20 +55,53 @@ def decrypt_vigenere(key, cipher_text, alphabet):
             counter += 1
     return ''.join(plaintext)
 
-def enc_menu():
-    
+def enc_menu(key, alphabet, encrypted_list):
+    plaintext = input("Enter text to encrypt: ")
+    encrypted_list.append(encrypt_vigenere(key, plaintext, alphabet))
+
+
+def dec_menu(key, alphabet, encrypted_list):
+    for cipher_text in encrypted_list:
+        print(decrypt_vigenere(key, cipher_text, alphabet))
+
+
+def dec_dump_menu(encrypted_list):
+    print(len(encrypted_list))
+    for cipher_text in encrypted_list:
+        print(cipher_text)
 
 def main():
     key = 'bluesmurf'
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
-    message = 'Print this message for fun'
-    ct = encrypt_vigenere(key, message, alphabet)
+    #message = 'Print this message for fun'
+    #ct = encrypt_vigenere(key, message, alphabet)
+    encrypted_list = []
 
+    menu = [
+        ['1) Encrypt', enc_menu, [key, alphabet, encrypted_list]],
+        ['2) Decrypt', dec_menu, [key, alphabet, encrypted_list]],
+        ['3) Dump Decrypt', dec_dump_menu, [encrypted_list]],
+        ['4) Quit', exit, [0]]
+    ]
+    while True:
+        print("-"*80)
+        for menu_item in menu:
+            print(menu_item[0])
+        try:
+            choice = int(input("Enter choice: "))
+            if not (0 < choice <= len(menu)):
+                print("Invalid choice")
+            else:
+                menu[choice-1][1](*menu[choice-1][2])
+        except ValueError as ignored:
+            print("Invalid choice.  Enter number between 1 and 4")
 
-
+        ###menu[0][1](*menu[0][2])
 
 #print(vigenere_index('b', 'b', alphabet))
 #print(ct)
 #print(decrypt_vigenere(key, ct, alphabet))
 #vigenere_sq_print(vigenere_sq(alphabet))
 
+if __name__ == '__main__':
+    main()
