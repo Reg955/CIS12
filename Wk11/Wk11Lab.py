@@ -1,3 +1,8 @@
+import os
+import json
+import re
+from random import randint
+
 HOW_MANY_BOOK = 3
 LINE = 128
 PAGE = 64
@@ -12,7 +17,9 @@ def clean_line(line):
 
 def process_books(*paths):
     for path in paths:
+ #       print(f'Reading {path}')
         read_book( path )
+ #       print(len(pages), len(pages[1]))
 
 def read_book(file_path):
     global char_window
@@ -53,3 +60,71 @@ def add_page():
     pages[page_number] = dict(line_window)
     line_window.clear()
     line_number = 0
+
+
+#process_books(r'C:\Users\Dave2\Documents\CIS12\Wk11\books\great.txt', r'C:\Users\Dave2\Documents\CIS12\Wk11\books\gull.txt' )
+
+def generate_code_book():
+    global pages
+    code_book = {}
+    for page, lines in pages.items():
+        for num, line in lines.items():
+            for pos, char in enumerate(line):
+                code_book.setdefault(char, []).append(f'{page}-{num}-{pos}')
+    return code_book
+
+#cb = generate_code_book()
+
+#for key, value in cb.items():
+    print(f'{key}: {value}')
+
+
+def save(file_path, book):
+    with open(file_path, 'w') as fp:
+        # json.dump(book, fp, indent=4)
+        json.dump(book, fp)
+
+
+def load(file_path, *key_books, reverse=False):
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as fp:
+            return json.load(fp)
+    else:
+        process_books(*key_books)
+        if reverse:
+            save(file_path, pages)
+            return pages
+        else:
+            code_book = generate_code_book()
+            save(file_path, code_book)
+            return code_book
+
+def encrypt(code_book, message):
+    cipher_text = []
+    for char in message:
+        index = randint(0, len(code_book[char]) - 1)
+        cipher_text.append(code_book[char].pop(index))
+    return '-'.join(cipher_text)
+
+def decrypt(rev_code_book, ciphertext):
+    plaintext = []
+    for cc in re.findall(r'\d+-\d+-\d+', ciphertext):
+        page, line, char = cc.split('-')
+        plaintext.append(
+            rev_code_book[page][line][int(char)])
+    return ''.join(plaintext)
+
+cb = generate_code_book()
+
+save(r'C:\Users\Dave2\Documents\CIS12\Wk11\code_books\book1.json', 'cb')
+
+message = input('Enter your message: ')
+print(
+    encrypt(
+        load(r'C:\Users\Dave2\Documents\CIS12\Wk11\code_books\book1.json',r'C:\Users\Dave2\Documents\CIS12\Wk11\books\great.txt', r'C:\Users\Dave2\Documents\CIS12\Wk11\books\gull.txt'), message))
+
+
+
+#save(r'C:\Users\Dave2\Documents\CIS12\Wk11\code_books\book1.json', 'cb')
+#cb = load(r'C:\Users\Dave2\Documents\CIS12\Wk11\code_books\book1_r.json',r'C:\Users\Dave2\Documents\CIS12\Wk11\books\great.txt', r'C:\Users\Dave2\Documents\CIS12\Wk11\books\gull.txt', reverse=True)
+#print(cb)
