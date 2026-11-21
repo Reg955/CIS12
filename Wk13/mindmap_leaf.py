@@ -1,4 +1,4 @@
-class MindmapLeaf:
+class MindMapLeaf:
     def __init__(self, name, shape):
         self.name = name
         self.shape = shape
@@ -8,7 +8,7 @@ class MindmapLeaf:
             "circle" : "(({}))",
             "oval" : "({})",
             "square" : "[{}]",
-            "cloud" : "){}("
+            "cloud" : "){}(",
             "hexagon" : "{{{{{}}}}}",
             "bang" : ")){}((",
         }
